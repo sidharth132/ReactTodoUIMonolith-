@@ -137,7 +137,7 @@ jobs:
           az account set --subscription ${{ env.SUBSCRIPTION_ID }}
           az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
           # git clone https://github.com/GunjanRajSingh/StarBucks-Deployment.git
-          cd Manifast
+          cd manifast
           kubectl create ns ReactTodoUI-ns
           kubectl apply -f .
           kubectl get pods -n ReactTodoUI-ns
