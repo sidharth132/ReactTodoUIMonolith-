@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: ReactTodoUI-app
-          image: aksclsuterregistry.azurecr.io/ReactTodoUI:latest
+          image: aksclsuterregistry.azurecr.io/reacttodoui:latest
           ports:
             - containerPort: 80
           resources:
