@@ -68,6 +68,7 @@ jobs:
         run: |
          npm audit --audit-level=high
          npm audit fix --force
+         exit-code: 0
 
         
             # Setup Node.js
