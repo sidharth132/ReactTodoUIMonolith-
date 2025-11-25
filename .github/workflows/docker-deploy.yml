@@ -52,8 +52,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=starbucks
-            -Dsonar.projectName=starbucks
+            -Dsonar.projectKey=ReactTodoUIMonolith
+            -Dsonar.projectName=ReactTodoUIMonolith
             
       # Install dependencies
       - name: Install dependencies
