@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: reactodoui-app
-          image: aksclsuterregistry.azurecr.io/reacttodoui:latest
+          image: aksclsuterregistry.azurecr.io/reacttodoui:latest #aksclsuterregistry.azurecr.io
           ports:
             - containerPort: 80
           resources:
