@@ -181,10 +181,10 @@ jobs:
           az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
           # git clone https://github.com/GunjanRajSingh/reacttodouimonolith-Deployment.git
           cd  manifast
-          kubectl create ns reacttodouimonolith-ns
+          kubectl create ns reactodoui-ns
           kubectl apply -f .
-          kubectl get pods -n reacttodouimonolith-ns
-          kubectl get ingress -n reacttodouimonolith-ns -owide
+          kubectl get pods -n reactodoui-ns
+          kubectl get ingress -n reactodoui-ns -owide
 
       #  Email Notification
       - name: Send Email Notification
