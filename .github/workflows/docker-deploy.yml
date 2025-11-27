@@ -1,11 +1,9 @@
-name: Buil & Push & deploy
-
+name: Build & Push & Deploy
 
 on:
   push:
     branches:
       - main
- 
   workflow_dispatch:
 
 permissions:
@@ -19,37 +17,25 @@ env:
   AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
   IMAGE_TAG: ${{ github.run_number }}
   SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-  
-# BUILD & SECURITY SCAN & PUSH 
 
 jobs:
+
   Build-Scan-Push:
     runs-on: ubuntu-latest
-
     steps:
 
-      - name: Clean Workspace
-        run: |
-          sudo rm -rf *
-          echo "Workspace cleaned."
-
-            # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-            # Az Login
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # gitleaks secret scan
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        
 
-          
       - name: OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
@@ -63,145 +49,11 @@ jobs:
         with:
           name: dependency-check-report
           path: reports/
-      # npm audit 
+
       - name: npm audit
         continue-on-error: true
         run: |
           npm audit --audit-level=high || true
           npm audit fix || true
 
-
-        
-            # Setup Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install  
-
-      # SonarQube scan
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.projectKey=ReactTodoUIMonolith
-            -Dsonar.projectName=ReactTodoUIMonolith
-      
-      # Wait for SonarQube Quality Gate
-      - name: Wait for SonarQube Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        with:
-          pollingTimeoutSec: 600
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # squ_30cf71e1b5685b3810d297dd9bbeff56b9c3f434
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #http://20.9.141.144:9000
-
-      #  Install Trivy   
-      - name: Aqua Security Trivy
-        uses: aquasecurity/trivy-action@0.33.1
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          # ignore-unfixed: 'false'
-          vuln-type: 'os,library'
-          severity: 'HIGH,CRITICAL'
-          format: 'table'
-          output: 'trivyfs.txt'
-          
-      - name: Upload Trivy FS Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-fs-report
-          path: trivyfs.txt
-
-      # Login to ACR
-      - name: Azure ACR Login
-        run: az acr login --name ${{ env.ACR_NAME }}
-
-      # Setup Docker
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-       # Build and push Docker image
-      - name: Build and Push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ env.ACR_LOGIN_SERVER }}/reacttodouimonolith:latest
-
-      # Trivy Image Scan
-      - name: Trivy Image Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.ACR_LOGIN_SERVER }}/reacttodouimonolith:latest
-          format: "table"
-          severity: "CRITICAL,HIGH"
-          exit-code: 0               
-          ignore-unfixed: true
-          vuln-type: "os,library"
-          output: 'trivyimage.txt'
-
-      - name: Upload Trivy Image Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-Image-report
-          path: trivyimage.txt
-          
-  Deploy-:
-    needs: Build-Scan-Push
-    runs-on: ubuntu-latest
-    steps:         
-      # Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      # Az Login
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      # Deploy to AKS
-      - name: Set AKS Context
-        uses: azure/aks-set-context@v4
-        with:
-          resource-group: ${{ env.AKS_RESOURCE_GROUP }} 
-          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
-
-
-      - name: Deploy Manifests to AKS
-        run: |
-          az account set --subscription ${{ env.SUBSCRIPTION_ID }}
-          az aks get-credentials --resource-group ${{ env.AKS_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
-          # git clone https://github.com/GunjanRajSingh/reacttodouimonolith-Deployment.git
-          cd  manifast
-          kubectl create ns reactodoui-ns
-          kubectl apply -f .
-          kubectl get pods -n reactodoui-ns
-          kubectl get ingress -n reactodoui-ns -owide
-
-      #  Email Notification
-      - name: Send Email Notification
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.EMAIL_USER }}
-          password: ${{ secrets.EMAIL_PASS }}
-          subject: "GitHub Actions Build ${{ job.status }}: reacttodouimonolith CI/CD #${{ github.run_number }}"
-          html_body: |
-            <p>Build: ${{ job.status }}</p>
-            <p>Repository: ${{ github.repository }}</p>
-            <p>Branch: ${{ github.ref_name }}</p>
-            <p>Build URL: <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow</a></p>
-          to: ${{ secrets.EMAIL_USER }}
-          from: ${{ secrets.EMAIL_USER }}
-
-  
+      - name: Set up
