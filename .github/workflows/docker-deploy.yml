@@ -157,7 +157,7 @@ jobs:
             --overwrite-existing
 
           kubectl create ns reactodoui-ns --dry-run=client -o yaml | kubectl apply -f -
-          kubectl apply -f manifest/ -n reactodoui-ns
+          kubectl apply -f Manifest/ -n reactodoui-ns
 
           kubectl get pods -n reactodoui-ns
           kubectl get ingress -n reactodoui-ns -o wide
