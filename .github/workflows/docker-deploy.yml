@@ -71,8 +71,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=ReactTodoUIMonolith
-            -Dsonar.projectName=ReactTodoUIMonolith
+            -Dsonar.projectKey=todoapp
+            -Dsonar.projectName=todoapp
 
       - name: Wait for SonarQube Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@master
@@ -115,7 +115,7 @@ jobs:
       - name: Trivy Image Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.ACR_LOGIN_SERVER }}/reacttodouimonolith:${{ env.IMAGE_TAG }}
+          image-ref: ${{ env.ACR_LOGIN_SERVER }}/todoapp:${{ env.IMAGE_TAG }}
           format: "table"
           severity: "CRITICAL,HIGH"
           exit-code: 0
