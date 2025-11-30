@@ -31,12 +31,12 @@ metadata:
   namespace: todoapp
 spec:
   selector:
-    apps: todoapp        # FIXED (matching Deployment label)
+    app: todoapp          # FIXED (correct label)
   ports:
   - name: http
     port: 80
     targetPort: 80
-  type: LoadBalancer         # Recommended when using Ingress
+  type: LoadBalancer
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -44,16 +44,14 @@ metadata:
   name: ingress-nginx
   namespace: todoapp
 spec:
-  ingressClassName: todoapp
+  ingressClassName: nginx       # should be nginx, not todoapp
   rules:
-  - host: ""              # no domain → use external IP of ingress controller
-    http:
+  - http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: todoapp-apps   # FIXED service name
+            name: todoapp-apps
             port:
               number: 80
-
