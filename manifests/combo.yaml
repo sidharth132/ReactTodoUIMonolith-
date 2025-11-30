@@ -9,19 +9,18 @@ metadata:
   name: todoapp-apps
   namespace: todoapp
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      apps: todoapp
+      app: todoapp
   template:
     metadata:
       labels:
-        apps: todoapp
+        app: todoapp
     spec:
       containers:
       - name: todoapp
         image: aksclsuterregistry.azurecr.io/todoapp:__TAG__
- #aksclsuterregistry.azurecr.io/todoapp:47
         ports:
         - containerPort: 80
 ---
