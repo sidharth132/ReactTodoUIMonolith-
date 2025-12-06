@@ -27,6 +27,9 @@ function TodoApp() {
             await axios.post(`${API_BASE_URL}/tasks`, newTask);
             fetchTasks();
             setNewTask({ title: '', description: '' });
+                        // ✅ Added: Immediately update state so UI reflects new task without refetching
+            setTasks([...tasks, response.data]);
+            setNewTask({ title: '', description: '' });
         } catch (error) {
             console.error('Error creating task', error);
         }
@@ -36,6 +39,8 @@ function TodoApp() {
         try {
             await axios.delete(`${API_BASE_URL}/tasks/${taskId}`);
             fetchTasks();
+                        // ✅ Added: Update state after delete instead of refetch
+            setTasks(tasks.filter(task => task.id !== taskId));
         } catch (error) {
             console.error('Error deleting task', error);
         }
@@ -137,12 +142,13 @@ function TodoApp() {
                     </Typography>
 
                     {tasks.map((task) => (
-                        <Box key={task.ID} mb={2}>
-                            <Card key={task.ID} variant="elevation">
+                        // ✅ Fixed: Use correct property names from backend (id, title, description)
+                        <Box key={task.id} mb={2}>
+                            <Card variant="elevation">
                                 <CardContent>
-                                    <Typography variant="h6">{task.Title}</Typography>
-                                    <Typography variant="body2">{task.Description}</Typography>
-                                    <IconButton onClick={() => deleteTask(task.ID)} color="secondary">
+                                    <Typography variant="h6">{task.title}</Typography>
+                                    <Typography variant="body2">{task.description}</Typography>
+                                    <IconButton onClick={() => deleteTask(task.id)} color="secondary">
                                         <Delete />
                                     </IconButton>
                                 </CardContent>
