@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: prodaksclusterregistry.azurecr.io/todoapp:81
+        image: prodaksclusterregistry.azurecr.io/todoapp:__TAG__
          # image: prodaksclusterregistry.azurecr.io/todoapp:__TAG__
         ports:
         - containerPort: 80
