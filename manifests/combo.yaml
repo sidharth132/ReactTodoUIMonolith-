@@ -47,7 +47,8 @@ metadata:
 spec:
   ingressClassName: nginx       # should be nginx, not todoapp
   rules:
-  - http:
+  - host: todoapp.local
+    http:
       paths:
       - path: /
         pathType: Prefix
