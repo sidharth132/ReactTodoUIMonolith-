@@ -42,18 +42,21 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-nginx
+  name: ingress-todoapp
   namespace: todoapp
 spec:
-  ingressClassName: nginx       # should be nginx, not todoapp
+  ingressClassName: nginx   # Make sure your cluster has this IngressClass
   rules:
-  - host: todoapp.local
+  - host: todoapp.local      # Unique host
     http:
       paths:
-      - path: /
+      - path: /todoapp       # Avoid using "/" if another ingress already has it
         pathType: Prefix
         backend:
           service:
             name: todoapp-apps
+            port:
+              number: 80
+
             port:
               number: 80
