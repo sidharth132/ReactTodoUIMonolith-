@@ -45,18 +45,19 @@ metadata:
   name: ingress-todoapp
   namespace: todoapp
 spec:
-  ingressClassName: nginx   # Make sure your cluster has this IngressClass
+  ingressClassName: nginx
   rules:
-  - host: todoapp.local      # Unique host
+  - host: todoapp.local          # unique host
     http:
       paths:
-      - path: /todoapp       # Avoid using "/" if another ingress already has it
+      - path: /todoapp           # avoid "/" to prevent conflicts
         pathType: Prefix
         backend:
           service:
             name: todoapp-apps
             port:
               number: 80
+
 
             port:
               number: 80
