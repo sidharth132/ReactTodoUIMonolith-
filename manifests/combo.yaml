@@ -47,15 +47,16 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: todoapp.local          # unique host
+  - host: todoapp.local
     http:
       paths:
-      - path: /todoapp           # avoid "/" to prevent conflicts
+      - path: /backend
         pathType: Prefix
         backend:
           service:
             name: todoapp-apps
             port:
               number: 80
+
 
 
