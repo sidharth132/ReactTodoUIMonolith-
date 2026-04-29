@@ -4,7 +4,7 @@ import { Button, TextField, Container, Typography, Grid, Card, CardContent, Icon
 import { Delete } from '@mui/icons-material';
 import { Box } from '@mui/material';
 
-// const API_BASE_URL = "http://128.203.75.119:8000";
+// const API_BASE_URL = "http://128.203.75.119:8000/app";
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 console.log("API:", process.env.REACT_APP_API_BASE_URL);
 // console.log("API BASE URL:", API_BASE_URL);
