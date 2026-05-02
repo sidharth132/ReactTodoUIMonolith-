@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: sidharthacr.azurecr.io/todoapp:100
+        image: sidharthacr.azurecr.io/todoapp:102
         # image: sidharthacr.azurecr.io/todoapp:__TAG__
         ports:
         - containerPort: 80
