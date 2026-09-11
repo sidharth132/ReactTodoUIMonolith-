@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 
 const API_BASE_URL = "http://135.119.65.152:8000/api";
 // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-console.log("API:", process.env.REACT_APP_API_BASE_URL);
+// console.log("API:", process.env.REACT_APP_API_BASE_URL);
 // console.log("API BASE URL:", API_BASE_URL);
 const backgroundImage = process.env.PUBLIC_URL + '/background.jpg';
 
