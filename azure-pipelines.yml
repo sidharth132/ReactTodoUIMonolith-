@@ -32,3 +32,48 @@ stages:
               targetPath: '$(Build.SourcesDirectory)/build'
               artifact: 'react-build'
               publishLocation: 'pipeline'
+
+
+  - stage: CD
+    displayName: Deploy to Nginx
+    dependsOn: CI
+    condition: succeeded()
+
+    jobs:
+    - job: Deploy
+      displayName: Deploy React to Linux VM
+
+      steps:
+
+      - checkout: none
+
+      # Download React Artifact
+      - task: DownloadPipelineArtifact@2
+        displayName: Download React Artifact
+        inputs:
+          buildType: 'current'
+          artifactName: 'react-build'
+          targetPath: '$(Pipeline.Workspace)/react-build'
+
+      # Copy React files to Linux VM
+      - task: CopyFilesOverSSH@0
+        displayName: Copy React Files to Linux VM
+        inputs:
+          sshEndpoint: 'Linux-VM-SSH'
+          sourceFolder: '$(Pipeline.Workspace)/react-build'
+          contents: '**'
+          targetFolder: '/tmp/react-build'
+          cleanTargetFolder: true
+          overwrite: true
+
+      # Deploy to Nginx
+      - task: SSH@0
+        displayName: Deploy React to Nginx
+        inputs:
+          sshEndpoint: 'Linux-VM-SSH'
+          runOptions: 'inline'
+          inline: |
+            sudo cp -a /tmp/react-build/. /var/www/html/
+            sudo nginx -t
+            sudo systemctl reload nginx
+          failOnStdErr: false
