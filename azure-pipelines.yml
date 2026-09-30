@@ -1,0 +1,34 @@
+
+trigger:
+  - main
+
+pool:
+  name: application
+
+stages:
+  - stage: CI
+    displayName: React Build and Publish
+    jobs:
+      - job: ReactBuild
+        displayName: React Application Build
+
+        steps:
+          - checkout: self
+
+
+
+          # Install dependencies
+          - script: npm install
+            displayName: Install Dependencies
+
+          # Build React application
+          - script: npm run build
+            displayName: Build React App
+
+          # Publish build as artifact
+          - task: PublishPipelineArtifact@1
+            displayName: Publish React Artifact
+            inputs:
+              targetPath: '$(Build.SourcesDirectory)/build'
+              artifact: 'react-build'
+              publishLocation: 'pipeline'
