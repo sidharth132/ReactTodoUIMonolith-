@@ -35,7 +35,7 @@ stages:
 
 
   - stage: CD
-    displayName: Deploy to Nginx
+    displayName: Deploy to NginxVm
     dependsOn: CI
     condition: succeeded()
 
@@ -74,6 +74,7 @@ stages:
           runOptions: 'inline'
           inline: |
             sudo cp -a /tmp/react-build/. /var/www/html/
+            sudo rm -f /var/www/html/index.nginx-debian.html
             sudo nginx -t
             sudo systemctl reload nginx
           failOnStdErr: false
