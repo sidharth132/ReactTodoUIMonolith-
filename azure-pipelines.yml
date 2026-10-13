@@ -15,11 +15,29 @@ stages:
         steps:
           - checkout: self
 
-
+          - task: Gitleaks@3
+            displayName: Gitleaks
+            inputs:
+              scanlocation: '$(Build.SourcesDirectory)'
+              configtype: 'default'
+              reportformat: 'sarif'
+              reportname: 'gitleakscan_report'
 
           # Install dependencies
           - script: npm install
             displayName: Install Dependencies
+
+          - task: Npm@1
+            displayName: 'NPM audit'
+            continueOnError: false
+            inputs:
+              command: 'custom'
+              workingDir: '$(Build.SourcesDirectory)'
+              customCommand: 'audit --audit-level=high'
+
+          
+
+          
 
           # Build React application
           - script: npm run build
