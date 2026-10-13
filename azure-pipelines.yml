@@ -67,8 +67,7 @@ stages:
               cliProjectKey: 'react-app'
               cliProjectName: 'React App'
               cliSources: 'src'
-              extraProperties: |
-                sonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
+
 
           - task: SonarQubeAnalyze@8
             displayName: 'Run SonarQube Analysis'
