@@ -7,6 +7,8 @@ pool:
 
 variables:
 - group: owasp
+
+
 stages:
   - stage: CI
     displayName: React Build and Publish
@@ -61,7 +63,6 @@ stages:
             inputs:
               version: 'latest'
 
-          
           - task: PowerShell@2
             displayName: 'Trivy File System Scan'
             inputs:
