@@ -59,9 +59,10 @@ stages:
 
           - task: SonarQubePrepare@8
             displayName: 'Prepare SonarQube Analysis'
+            condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/master'))
             inputs:
               SonarQube: 'Sonarqube'
-              scannerMode: 'cli'
+              scannerMode: 'CLI'
               configMode: 'manual'
               cliProjectKey: 'react-app'
               cliProjectName: 'React App'
@@ -71,9 +72,11 @@ stages:
 
           - task: SonarQubeAnalyze@8
             displayName: 'Run SonarQube Analysis'
+            condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/master'))
 
           - task: SonarQubePublish@8
             displayName: 'Publish SonarQube Quality Gate'
+            condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/master'))
             inputs:
               pollingTimeoutSec: '300'
 
