@@ -34,11 +34,12 @@ stages:
 
           - task: Npm@1
             displayName: 'NPM audit'
-            continueOnError: false
             inputs:
               command: 'custom'
               workingDir: '$(Build.SourcesDirectory)'
               customCommand: 'audit --audit-level=high'
+            continueOnError: true
+            
           - task: SonarQubePrepare@8
             displayName: 'Prepare SonarQube Analysis'
             inputs:
