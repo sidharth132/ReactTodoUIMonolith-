@@ -57,7 +57,6 @@ stages:
 
                 & "$javaHome\bin\java.exe" -version
 
-
           - task: SonarQubePrepare@8
             displayName: 'Prepare SonarQube Analysis'
             inputs:
@@ -67,7 +66,8 @@ stages:
               cliProjectKey: 'react-app'
               cliProjectName: 'React App'
               cliSources: 'src'
-
+              extraProperties: |
+                sonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
 
           - task: SonarQubeAnalyze@8
             displayName: 'Run SonarQube Analysis'
@@ -76,6 +76,9 @@ stages:
             displayName: 'Publish SonarQube Quality Gate'
             inputs:
               pollingTimeoutSec: '300'
+
+
+
           
           - task: trivy@2
             displayName: 'Trivy Install'
