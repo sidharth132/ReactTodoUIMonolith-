@@ -40,12 +40,23 @@ stages:
               customCommand: 'audit --audit-level=high'
             continueOnError: true
           
-          - task: JavaToolInstaller@0
+
+          - task: PowerShell@2
             displayName: 'Set up Java 17'
             inputs:
-              versionSpec: '17'
-              jdkArchitectureOption: 'x64'
-              jdkSourceOption: 'PreInstalled'
+              targetType: 'inline'
+              script: |
+                $javaHome = 'C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot'
+
+                if (!(Test-Path "$javaHome\bin\java.exe")) {
+                  throw "Java 17 not found"
+                }
+
+                Write-Host "##vso[task.setvariable variable=JAVA_HOME]$javaHome"
+                Write-Host "##vso[task.prependpath]$javaHome\bin"
+
+                & "$javaHome\bin\java.exe" -version
+
 
           - task: SonarQubePrepare@8
             displayName: 'Prepare SonarQube Analysis'
