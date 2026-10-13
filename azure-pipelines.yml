@@ -39,7 +39,14 @@ stages:
               workingDir: '$(Build.SourcesDirectory)'
               customCommand: 'audit --audit-level=high'
             continueOnError: true
-            
+          
+          - task: JavaToolInstaller@0
+            displayName: 'Set up Java 17'
+            inputs:
+              versionSpec: '17'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
+
           - task: SonarQubePrepare@8
             displayName: 'Prepare SonarQube Analysis'
             inputs:
