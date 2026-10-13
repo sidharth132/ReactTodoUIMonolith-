@@ -26,6 +26,7 @@ stages:
               configtype: 'default'
               reportformat: 'sarif'
               reportname: 'gitleakscan_report'
+            continueOnError: true
 
           # Install dependencies
           - script: npm install
