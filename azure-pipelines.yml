@@ -5,6 +5,8 @@ trigger:
 pool:
   name: application
 
+variables:
+- group: owasp
 stages:
   - stage: CI
     displayName: React Build and Publish
@@ -34,10 +36,41 @@ stages:
               command: 'custom'
               workingDir: '$(Build.SourcesDirectory)'
               customCommand: 'audit --audit-level=high'
+          - task: SonarQubePrepare@8
+            displayName: 'Prepare SonarQube Analysis'
+            inputs:
+              SonarQube: 'Sonarqube'
+              scannerMode: 'cli'
+              configMode: 'manual'
+              cliProjectKey: 'react-app'
+              cliProjectName: 'React App'
+              cliSources: 'src'
+              extraProperties: |
+                sonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
+
+          - task: SonarQubeAnalyze@8
+            displayName: 'Run SonarQube Analysis'
+
+          - task: SonarQubePublish@8
+            displayName: 'Publish SonarQube Quality Gate'
+            inputs:
+              pollingTimeoutSec: '300'
+          
+          - task: trivy@2
+            displayName: 'Trivy Install'
+            inputs:
+              version: 'latest'
+
+          
+          - task: PowerShell@2
+            displayName: 'Trivy File System Scan'
+            inputs:
+              targetType: 'inline'
+              script: |
+                trivy fs --scanners vuln,misconfig,secret --severity HIGH,CRITICAL .
 
           
 
-          
 
           # Build React application
           - script: npm run build
@@ -50,6 +83,14 @@ stages:
               targetPath: '$(Build.SourcesDirectory)/build'
               artifact: 'react-build'
               publishLocation: 'pipeline'
+          - task: dependency-check-build-task@6
+            displayName: OWASP Dependency Check
+            inputs:
+              projectName: 'React App'
+              scanPath: '.'
+              format: 'HTML'
+              uploadReports: true
+              nvdApiKey: '$(NVD_API_KEY)'
 
 
   - stage: CD
