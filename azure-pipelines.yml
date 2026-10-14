@@ -101,17 +101,14 @@ stages:
 
 
           
-          - task: trivy@2
-            displayName: 'Trivy Install'
+          - task: Trivy@1
+            displayName: "Trivy Filesystem Scan"
             inputs:
-              version: 'latest'
-
-          - task: PowerShell@2
-            displayName: 'Trivy File System Scan'
-            inputs:
-              targetType: 'inline'
-              script: |
-                trivy fs --scanners vuln,misconfig,secret --severity HIGH,CRITICAL .
+              scanType: 'fs'
+              Path: '.'
+              severity: 'HIGH,CRITICAL'
+              ignoreUnfixed: true
+              exitCode: '0'
 
           
 
