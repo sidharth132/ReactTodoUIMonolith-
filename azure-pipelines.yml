@@ -127,14 +127,30 @@ stages:
               targetPath: '$(Build.SourcesDirectory)/build'
               artifact: 'react-build'
               publishLocation: 'pipeline'
+
+              
+          # - task: dependency-check-build-task@6
+          #   displayName: OWASP Dependency Check
+          #   inputs:
+          #     projectName: 'React App'
+          #     scanPath: '.'
+          #     format: 'HTML'
+          #     uploadReports: true
+          #     nvdApiKey: '$(NVD_API_KEY)'
+
+          
           - task: dependency-check-build-task@6
-            displayName: OWASP Dependency Check
+            displayName: 'OWASP Dependency Check'
+            retryCountOnTaskFailure: 2
             inputs:
               projectName: 'React App'
-              scanPath: '.'
+              scanPath: '$(Build.SourcesDirectory)'
               format: 'HTML'
               uploadReports: true
               nvdApiKey: '$(NVD_API_KEY)'
+              additionalArguments: '--nvdMaxRetryCount 20'
+            continueOnError: true
+
 
 
   - stage: CD
