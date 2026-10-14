@@ -102,10 +102,12 @@ stages:
 
           
           - task: Trivy@1
-            displayName: "Trivy Filesystem Scan"
+            displayName: 'Trivy Filesystem Scan'
             inputs:
+              version: 'latest'
+              docker: false
               scanType: 'fs'
-              Path: '.'
+              path: '.'
               severity: 'HIGH,CRITICAL'
               ignoreUnfixed: true
               exitCode: '0'
