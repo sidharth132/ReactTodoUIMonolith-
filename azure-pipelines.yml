@@ -186,14 +186,15 @@ stages:
           overwrite: true
 
       # Deploy to Nginx
+
       - task: SSH@0
         displayName: Deploy React to Nginx
         inputs:
           sshEndpoint: 'Linux-VM-SSH'
           runOptions: 'inline'
           inline: |
-            sudo cp -a /tmp/react-build/. /var/www/html/
-            sudo rm -f /var/www/html/index.nginx-debian.html
-            sudo nginx -t
-            sudo systemctl reload nginx
+            sudo -n cp -a /tmp/react-build/. /var/www/html/
+            sudo -n rm -f /var/www/html/index.nginx-debian.html
+            sudo -n nginx -t
+            sudo -n systemctl reload nginx
           failOnStdErr: false
