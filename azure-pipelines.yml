@@ -69,6 +69,24 @@ stages:
               cliSources: 'src'
               extraProperties: |
                 sonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
+          
+          - task: PowerShell@2
+            displayName: 'Remove SonarQube Branch Parameter'
+            condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/master'))
+            inputs:
+              targetType: 'inline'
+              script: |
+                $params = $env:SONARQUBE_SCANNER_PARAMS
+
+                if ($params) {
+                  $settings = $params | ConvertFrom-Json
+                  $settings.PSObject.Properties.Remove('sonar.branch.name')
+                  $updated = $settings | ConvertTo-Json -Compress
+                  Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$updated"
+                  Write-Host "Removed sonar.branch.name for Community Build"
+                } else {
+                  Write-Host "Scanner parameters not found; check pipeline logs"
+                }
 
           - task: SonarQubeAnalyze@8
             displayName: 'Run SonarQube Analysis'
