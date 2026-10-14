@@ -18,6 +18,7 @@ stages:
 
         steps:
           - checkout: self
+            fetchDepth: 0
 
           - task: Gitleaks@3
             displayName: Gitleaks
